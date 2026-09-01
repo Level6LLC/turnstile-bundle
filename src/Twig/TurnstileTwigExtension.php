@@ -44,6 +44,15 @@ class TurnstileTwigExtension extends AbstractExtension implements GlobalsInterfa
 
     public function renderWidget(string $action): string
     {
+        if ('' === trim($this->sitekey)) {
+            // Unprovisioned environment (TURNSTILE_SITEKEY missing): render
+            // nothing instead of a widget with an empty sitekey, which would
+            // make api.js throw "Invalid input for parameter \"sitekey\"". The
+            // server-side gate is likewise disabled when the secret is empty,
+            // so such an environment behaves as if Turnstile were absent.
+            return '';
+        }
+
         $html = '';
 
         if (!$this->apiScriptRendered) {

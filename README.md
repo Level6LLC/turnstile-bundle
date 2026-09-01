@@ -110,3 +110,38 @@ browser -> application backend -> siteverify.
 - Keep the `data-action` of each surface in sync with the config `action` value.
 - Native full-page form posts need no explicit widget reset; for SPA/inline
   submissions render explicitly and call `window.turnstile.reset(widgetId)` yourself.
+
+## Provisioning & troubleshooting
+
+The bundle is intentionally fail-open on misconfiguration and never breaks pages:
+
+- empty `sitekey` (env var missing) ⇒ `turnstile_widget()` renders nothing;
+- empty `secret` ⇒ the server-side gate disables verification.
+
+So an environment missing either variable behaves as if Turnstile were absent,
+while a correctly provisioned one is fully protected. Always provision both
+*together*, wherever that environment keeps its variables:
+
+```bash
+# committed .env (public value) or the deploy platform's public config
+TURNSTILE_SITEKEY=0x4...
+# git-ignored .env.local or the platform secret manager (never commit)
+TURNSTILE_SECRET=0x4...
+```
+
+On Symfony deployments that compile env (`composer dump-env prod` producing
+`.env.local.php`), re-run `dump-env` after adding the variables.
+
+**Prod symptom of missing `TURNSTILE_SITEKEY` on bundle 1.0.0:** the browser
+console shows `Uncaught TurnstileError: [Cloudflare Turnstile] Invalid input for
+parameter "sitekey", got ""` on every page that renders the widget. Since
+v1.0.1 the widget is simply not rendered in that case; upgrade the pinned
+version or provision the variable.
+
+Detecting where a production server keeps its env values (read-only):
+
+```bash
+ls -a <release-dir> | grep -E '^\.env'
+grep -c TURNSTILE <release-dir>/.env* 2>/dev/null
+[ -f <release-dir>/.env.local.php ] && echo 'compiled env present: re-run composer dump-env prod'
+```
