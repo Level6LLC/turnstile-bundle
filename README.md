@@ -19,11 +19,7 @@ the security `Firewall` at 8) and never touches application security code.
 Add the package repository and require it in the consuming project:
 
 ```bash
-# Local development (path repository, sibling checkout).
-# IMPORTANT: set options.symlink=false so composer copies the package instead of
-# symlinking it; a symlink to the sibling checkout does not resolve inside docker
-# containers that only mount the project directory.
-composer config repositories.turnstile-bundle '{"type":"path","url":"../turnstile-bundle","options":{"symlink":false}}'
+composer config repositories.turnstile-bundle vcs git@github.com:Level6LLC/turnstile-bundle.git
 composer require level6/turnstile-bundle
 
 # Fleet reuse: push this folder to its own git repo, then in each consumer:

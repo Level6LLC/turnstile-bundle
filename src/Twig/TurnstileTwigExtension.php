@@ -28,7 +28,7 @@ class TurnstileTwigExtension extends AbstractExtension implements GlobalsInterfa
         $this->sitekey = $sitekey;
     }
 
-    public function getGlobals()
+    public function getGlobals(): array
     {
         return [
             'turnstile_sitekey' => $this->sitekey,
