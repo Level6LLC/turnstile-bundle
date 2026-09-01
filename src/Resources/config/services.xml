@@ -1,0 +1,25 @@
+<?xml version="1.0" ?>
+<container xmlns="http://symfony.com/schema/dic/services"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://symfony.com/schema/dic/services https://symfony.com/schema/dic/services/services-1.0.xsd">
+
+    <services>
+        <service id="Level6\TurnstileBundle\Service\TurnstileVerifier">
+            <argument type="service" id="Symfony\Contracts\HttpClient\HttpClientInterface" />
+            <argument>%turnstile.secret%</argument>
+            <argument>%turnstile.hostnames%</argument>
+        </service>
+
+        <service id="Level6\TurnstileBundle\EventSubscriber\TurnstileGuardSubscriber">
+            <argument type="service" id="Level6\TurnstileBundle\Service\TurnstileVerifier" />
+            <argument type="service" id="router" />
+            <argument>%turnstile.surfaces%</argument>
+            <tag name="kernel.event_subscriber" />
+        </service>
+
+        <service id="Level6\TurnstileBundle\Twig\TurnstileTwigExtension">
+            <argument>%turnstile.sitekey%</argument>
+            <tag name="twig.extension" />
+        </service>
+    </services>
+</container>
