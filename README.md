@@ -4,23 +4,49 @@ Cloudflare Turnstile captcha for Symfony applications: widget rendering, canonic
 server-side siteverify, and configurable request gating for any form/POST surface
 (login, password reset, registration, contact forms, ...).
 
-Works with Symfony 4.4 / 5.4 and any authenticator system (guard or new), because
-the gate runs on `kernel.request` (priority 16: after `RouterListener` at 32, before
-the security `Firewall` at 8) and never touches application security code.
+Works with Symfony 4.4 through 7.0 and any authenticator system (guard or new),
+because the gate runs on `kernel.request` (priority 16: after `RouterListener` at
+32, before the security `Firewall` at 8) and never touches application security
+code.
 
 ## Requirements
 
 - PHP >= 7.1.3
-- symfony/http-client, http-kernel, config, dependency-injection, routing ^4.4|^5.4
+- symfony/http-client, http-kernel, config, dependency-injection ^4.4|^5.4|^6.0|^7.0
+- symfony/routing ^4.4|^5.4|^6.0
 - twig/twig ^2.7|^3.0
 
 ## Installation
 
-Add the package repository and require it in the consuming project:
+### 1. Generate a GitHub access token
+
+The bundle lives in a private repository, so Composer needs a token with read
+access to it. Create a fine-grained token here:
+
+**https://github.com/settings/personal-access-tokens/new?contents=read&name=Composer+turnstile-bundle**
+
+After opening the link:
+
+1. **Resource owner** — switch from your personal account to `Level6LLC`. (If
+   this organization doesn't appear in the list, you haven't been added as a
+   member/collaborator — ask the organization owner to grant access.)
+2. **Repository access** — select "Only select repositories" → `turnstile-bundle`
+   (or "All repositories" if you'll need other private packages from this
+   organization).
+3. **Permissions → Repository permissions → Contents** — set to `Read-only`
+   (defaults to `No access`).
+4. **Expiration** — use a short lifetime, as recommended for CI/deployment
+   tokens.
+
+Each developer or CI environment should generate its **own** token from this
+link — don't share or reuse the same token across people or environments.
+
+### 2. Add the repository and require the package
 
 ```bash
 composer config repositories.turnstile-bundle vcs git@github.com:Level6LLC/turnstile-bundle.git
-composer require level6/turnstile-bundle
+
+GH_TOKEN='replace_with_your_token' COMPOSER_AUTH="{\"github-oauth\":{\"github.com\":\"$GH_TOKEN\"}}" composer require level6/turnstile-bundle:^1.0.4 --no-interaction --no-progress
 
 # Fleet reuse: push this folder to its own git repo, then in each consumer:
 # composer config repositories.turnstile-bundle '{"type":"vcs","url":"git@host:org/turnstile-bundle.git"}'
