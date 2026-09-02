@@ -23,7 +23,7 @@ class TurnstileExtension extends Extension
         $loader->load('services.xml');
     }
 
-    public function getAlias()
+    public function getAlias(): string
     {
         return 'turnstile';
     }
