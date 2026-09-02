@@ -46,7 +46,7 @@ link — don't share or reuse the same token across people or environments.
 ```bash
 composer config repositories.turnstile-bundle vcs git@github.com:Level6LLC/turnstile-bundle.git
 
-GH_TOKEN='replace_with_your_token' COMPOSER_AUTH="{\"github-oauth\":{\"github.com\":\"$GH_TOKEN\"}}" composer require level6/turnstile-bundle:^1.0.4 --no-interaction --no-progress
+GH_TOKEN='replace_with_your_token' COMPOSER_AUTH="{\"github-oauth\":{\"github.com\":\"$GH_TOKEN\"}}" composer require level6/turnstile-bundle:^1.0 --no-interaction --no-progress
 
 # Fleet reuse: push this folder to its own git repo, then in each consumer:
 # composer config repositories.turnstile-bundle '{"type":"vcs","url":"git@host:org/turnstile-bundle.git"}'
@@ -87,12 +87,24 @@ Environment variables stay in the consuming app (never commit the secret):
 
 ```bash
 # .env (committed, public values only)
+###> cloudflare turnstile ###
+# Public site key of the Turnstile widget, rendered into the login and
+# reset-password pages via the "turnstile_sitekey" Twig global.
 TURNSTILE_SITEKEY=0x4...
+# Secret key of the Turnstile widget.
+# NEVER commit a real value here; put it in .env.local (git-ignored) or in the
+# deployment environment. An empty value disables captcha verification.
 TURNSTILE_SECRET=
+# Optional comma-separated allowlist of frontend hostnames checked against the
+# siteverify response (e.g. harmanprorewards.com,www.harmanprorewards.com).
+# Empty means the hostname is not checked.
 TURNSTILE_HOSTNAMES=
+###< cloudflare turnstile ###
 
 # .env.local (git-ignored) or the deployment secret manager
+###> cloudflare turnstile ###
 TURNSTILE_SECRET=0x4...secret
+###< cloudflare turnstile ###
 ```
 
 An empty `secret` disables verification for that environment so unprovisioned
