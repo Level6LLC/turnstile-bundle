@@ -138,6 +138,13 @@ parameter "sitekey", got ""` on every page that renders the widget. Since
 v1.0.1 the widget is simply not rendered in that case; upgrade the pinned
 version or provision the variable.
 
+**Maintainer note — versioning via tags only:** this package's composer.json MUST
+NOT contain a `"version"` field. Composer skips any vcs tag whose composer.json
+`version` differs from the tag name ("Skipped tag vX, tag does not match version
+in composer.json"), so a stale in-file version hides releases (tags ≤ v1.0.1 are
+unusable for this reason; v1.0.2 is the first proper release). Create releases
+with `git tag -a vX.Y.Z && git push origin vX.Y.Z`.
+
 Detecting where a production server keeps its env values (read-only):
 
 ```bash

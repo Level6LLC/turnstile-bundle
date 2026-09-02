@@ -1,6 +1,5 @@
 {
     "name": "level6/turnstile-bundle",
-    "version": "1.0.0",
     "description": "Cloudflare Turnstile captcha for Symfony: widget rendering, canonical server-side siteverify and configurable request gating (login, password reset, any POST surface).",
     "type": "symfony-bundle",
     "license": "proprietary",
