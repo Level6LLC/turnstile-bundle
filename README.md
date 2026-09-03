@@ -12,8 +12,8 @@ code.
 ## Requirements
 
 - PHP >= 7.1.3
-- symfony/http-client, http-kernel, config, dependency-injection ^4.4|^5.4|^6.0|^7.0
-- symfony/routing ^4.4|^5.4|^6.0
+- symfony/http-client, http-kernel, config, dependency-injection ^4.4|^5.4|^6.0|^7.0|^8.0
+- symfony/routing ^4.4|^5.4|^6.0|^7.0|^8.0
 - twig/twig ^2.7|^3.0
 
 ## Installation
