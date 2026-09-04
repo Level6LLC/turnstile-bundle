@@ -4,7 +4,7 @@ Cloudflare Turnstile captcha for Symfony applications: widget rendering, canonic
 server-side siteverify, and configurable request gating for any form/POST surface
 (login, password reset, registration, contact forms, ...).
 
-Works with Symfony 4.4 through 7.0 and any authenticator system (guard or new),
+Works with Symfony 4.4 through 6.x (this is the legacy 1.x line; for Symfony 7 use the 2.x branch).
 because the gate runs on `kernel.request` (priority 16: after `RouterListener` at
 32, before the security `Firewall` at 8) and never touches application security
 code.
@@ -12,8 +12,8 @@ code.
 ## Requirements
 
 - PHP >= 7.1.3
-- symfony/http-client, http-kernel, config, dependency-injection ^4.4|^5.4|^6.0|^7.0|^8.0
-- symfony/routing ^4.4|^5.4|^6.0|^7.0|^8.0
+- symfony/http-client, http-kernel, config, dependency-injection ^4.4|^5.4|^6.0
+- symfony/routing ^4.4|^5.4|^6.0
 - twig/twig ^2.7|^3.0
 
 ## Installation
