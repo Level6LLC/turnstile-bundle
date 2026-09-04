@@ -1,0 +1,45 @@
+{
+    "manifests": {
+        "level6/turnstile-bundle": {
+            "manifest": {
+                "bundles": {
+                    "Level6\\TurnstileBundle\\TurnstileBundle": ["all"]
+                },
+                "copy-from-recipe": {
+                    "config/": "%CONFIG_DIR%"
+                },
+                "env": {
+                    "TURNSTILE_SITEKEY": "",
+                    "TURNSTILE_SECRET": "",
+                    "TURNSTILE_HOSTNAMES": ""
+                }
+            },
+            "files": {
+                "config/packages/turnstile.yaml": {
+                    "contents": [
+                        "turnstile:",
+                        "    sitekey: '%env(TURNSTILE_SITEKEY)%'",
+                        "    secret: '%env(TURNSTILE_SECRET)%'",
+                        "    hostnames: []",
+                        "    surfaces:",
+                        "        login:",
+                        "            route: login",
+                        "            methods: [POST]",
+                        "            action: login",
+                        "            on_failure: flash_redirect",
+                        "            flash_type: danger",
+                        "            message: 'Security verification failed. Please try again.'",
+                        "        reset_password:",
+                        "            route: app_forgot_password_request",
+                        "            action: reset_password",
+                        "            on_failure: flash_redirect",
+                        "            flash_type: reset_password_error",
+                        ""
+                    ],
+                    "executable": false
+                }
+            },
+            "ref": "b79bf6d12ba28bfa6a2a6a90ac4814c514c65c89"
+        }
+    }
+}

@@ -1,0 +1,7 @@
+{
+    "recipes": {
+        "level6/turnstile-bundle": ["2.0"]
+    },
+    "branch": "main",
+    "is_contrib": false
+}

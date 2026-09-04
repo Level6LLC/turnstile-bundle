@@ -4,17 +4,17 @@ Cloudflare Turnstile captcha for Symfony applications: widget rendering, canonic
 server-side siteverify, and configurable request gating for any form/POST surface
 (login, password reset, registration, contact forms, ...).
 
-Works with Symfony 4.4 through 7.0 and any authenticator system (guard or new),
-because the gate runs on `kernel.request` (priority 16: after `RouterListener` at
+Works with Symfony 7.x (this is the 2.x line; for Symfony 4.4–6.x use the 1.x branch).
+The gate runs on `kernel.request` (priority 16: after `RouterListener` at
 32, before the security `Firewall` at 8) and never touches application security
 code.
 
 ## Requirements
 
-- PHP >= 7.1.3
-- symfony/http-client, http-kernel, config, dependency-injection ^4.4|^5.4|^6.0|^7.0|^8.0
-- symfony/routing ^4.4|^5.4|^6.0|^7.0|^8.0
-- twig/twig ^2.7|^3.0
+- PHP >= 8.2
+- symfony/http-client, http-kernel, config, dependency-injection ^7.0
+- symfony/routing ^7.0
+- twig/twig ^3.0
 
 ## Installation
 
@@ -46,18 +46,37 @@ link — don't share or reuse the same token across people or environments.
 ```bash
 composer config repositories.turnstile-bundle vcs git@github.com:Level6LLC/turnstile-bundle.git
 
-GH_TOKEN='replace_with_your_token' COMPOSER_AUTH="{\"github-oauth\":{\"github.com\":\"$GH_TOKEN\"}}" composer require level6/turnstile-bundle:^1.0 --no-interaction --no-progress
+GH_TOKEN='replace_with_your_token' COMPOSER_AUTH="{\"github-oauth\":{\"github.com\":\"$GH_TOKEN\"}}" composer require level6/turnstile-bundle:^2.0 --no-interaction --no-progress
 
 # Fleet reuse: push this folder to its own git repo, then in each consumer:
 # composer config repositories.turnstile-bundle '{"type":"vcs","url":"git@host:org/turnstile-bundle.git"}'
 # composer require level6/turnstile-bundle
 ```
 
-Register the bundle in `config/bundles.php`:
+The Flex recipe auto-configures everything: it registers the bundle in `config/bundles.php`, writes `config/packages/turnstile.yaml`, and appends the `TURNSTILE_*` variables to `.env`. If you're not using Flex, register the bundle in `config/bundles.php` manually:
 
 ```php
 Level6\TurnstileBundle\TurnstileBundle::class => ['all' => true],
 ```
+
+## Symfony Flex recipe
+
+This repository ships a Flex recipe under `recipes/` (`index.json` plus `level6.turnstile-bundle.2.0.json`). Host those files in a private recipes repository and point each consumer at its index:
+
+```json
+{
+    "extra": {
+        "symfony": {
+            "endpoint": [
+                "https://api.github.com/repos/Level6LLC/recipes/contents/index.json",
+                "flex://defaults"
+            ]
+        }
+    }
+}
+```
+
+Then `composer require level6/turnstile-bundle:^2.0` auto-registers the bundle, writes `config/packages/turnstile.yaml`, and appends the `TURNSTILE_*` variables to `.env`.
 
 ## Configuration
 
