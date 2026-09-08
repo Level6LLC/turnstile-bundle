@@ -10,7 +10,12 @@ class Configuration implements ConfigurationInterface
     public function getConfigTreeBuilder(): TreeBuilder
     {
         $treeBuilder = new TreeBuilder('turnstile');
-        $rootNode = $treeBuilder->getRootNode();
+
+        // getRootNode() was introduced in Symfony 4.2; 4.0/4.1 return the root
+        // node from TreeBuilder::root() instead.
+        $rootNode = method_exists($treeBuilder, 'getRootNode')
+            ? $treeBuilder->getRootNode()
+            : $treeBuilder->root('turnstile');
 
         $rootNode
             ->children()
@@ -43,9 +48,12 @@ class Configuration implements ConfigurationInterface
                                 ->defaultNull()
                                 ->info('Turnstile action sent by the widget; defaults to the surface key.')
                             ->end()
-                            ->enumNode('on_failure')
-                                ->values(['flash_redirect', '403'])
+                            ->scalarNode('on_failure')
                                 ->defaultValue('flash_redirect')
+                                ->validate()
+                                    ->ifNotInArray(['flash_redirect', '403'])
+                                    ->thenInvalid('Invalid on_failure value "%s"; expected "flash_redirect" or "403".')
+                                ->end()
                             ->end()
                             ->scalarNode('flash_type')
                                 ->defaultValue('danger')

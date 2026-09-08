@@ -5,14 +5,12 @@ namespace Symfony\Component\DependencyInjection\Loader\Configurator;
 use Level6\TurnstileBundle\EventSubscriber\TurnstileGuardSubscriber;
 use Level6\TurnstileBundle\Service\TurnstileVerifier;
 use Level6\TurnstileBundle\Twig\TurnstileTwigExtension;
-use Symfony\Contracts\HttpClient\HttpClientInterface;
 
 return static function (ContainerConfigurator $container): void {
     $services = $container->services();
 
     $services->set(TurnstileVerifier::class)
         ->args([
-            service(HttpClientInterface::class),
             param('turnstile.secret'),
             param('turnstile.hostnames'),
         ]);

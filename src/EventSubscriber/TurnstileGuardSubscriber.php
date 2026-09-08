@@ -6,7 +6,7 @@ use Level6\TurnstileBundle\Service\TurnstileVerifier;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Response;
-use Symfony\Component\HttpKernel\Event\RequestEvent;
+use Symfony\Component\HttpKernel\Event\KernelEvent;
 use Symfony\Component\HttpKernel\KernelEvents;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 
@@ -18,6 +18,10 @@ use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
  * captcha is verified before any authenticator of any Symfony version runs.
  * The existing handler logic stays the same; this only gates failed
  * verifications ("gate, don't replace").
+ *
+ * The kernel.request event is type-hinted against KernelEvent — the common
+ * base of GetResponseEvent (Symfony 4.0-4.2) and RequestEvent (4.3+) — so a
+ * single class covers the whole supported Symfony range.
  */
 class TurnstileGuardSubscriber implements EventSubscriberInterface
 {
@@ -39,9 +43,9 @@ class TurnstileGuardSubscriber implements EventSubscriberInterface
         ];
     }
 
-    public function onKernelRequest(RequestEvent $event): void
+    public function onKernelRequest(KernelEvent $event): void
     {
-        if (!$event->isMainRequest()) {
+        if (!$this->isMainRequest($event)) {
             return;
         }
 
@@ -84,5 +88,16 @@ class TurnstileGuardSubscriber implements EventSubscriberInterface
 
             return;
         }
+    }
+
+    private function isMainRequest(KernelEvent $event): bool
+    {
+        // isMainRequest() exists since Symfony 4.3; earlier releases only have
+        // isMasterRequest().
+        if (method_exists($event, 'isMainRequest')) {
+            return $event->isMainRequest();
+        }
+
+        return $event->isMasterRequest();
     }
 }
